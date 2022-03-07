@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+part 'category.g.dart';
 
 @Collection()
 class Category {
