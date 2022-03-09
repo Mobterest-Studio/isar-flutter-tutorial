@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  isar_flutter_libs
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
