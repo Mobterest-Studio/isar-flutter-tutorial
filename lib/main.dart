@@ -10,11 +10,12 @@ void main() async {
   final dir = await getApplicationSupportDirectory();
   final isar = await Isar.open(
       schemas: [RoutineSchema, CategorySchema], directory: dir.path);
-  runApp(const MyApp());
+  runApp(MyApp(isar: isar));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final Isar isar;
+  const MyApp({Key? key, required this.isar}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +24,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MainPage(),
+      home: MainPage(isar: isar),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  final Isar isar;
+  const MainPage({Key? key, required this.isar}) : super(key: key);
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -48,7 +50,8 @@ class _MainPageState extends State<MainPage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const CreateRoutine()));
+                        builder: (context) =>
+                            CreateRoutine(isar: widget.isar)));
               },
               icon: const Icon(Icons.add))
         ],
