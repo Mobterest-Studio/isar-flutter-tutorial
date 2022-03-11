@@ -10,7 +10,7 @@ class Routine {
   late String title;
 
   @Index()
-  late DateTime startTime;
+  late String startTime;
 
   @Index(caseSensitive: false)
   late String day;
