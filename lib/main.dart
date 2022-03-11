@@ -39,9 +39,18 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  List<Routine>? routines;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _readRoutines();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Routine"),
         actions: [
@@ -56,6 +65,65 @@ class _MainPageState extends State<MainPage> {
               icon: const Icon(Icons.add))
         ],
       ),
+      body: SingleChildScrollView(
+        child: Column(children: _buildWidgets()),
+      ),
     );
+  }
+
+  List<Widget> _buildWidgets() {
+    List<Widget> x = [];
+
+    for (int i = 0; i < routines!.length; i++) {
+      x.add(Card(
+        elevation: 4.0,
+        child: ListTile(
+            title:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0, bottom: 2.0),
+                child: Text(
+                  routines![i].title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5.0),
+                child: RichText(
+                    text: TextSpan(
+                        style: const TextStyle(color: Colors.black),
+                        children: [
+                      const WidgetSpan(child: Icon(Icons.schedule, size: 16)),
+                      TextSpan(text: routines![i].startTime)
+                    ])),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5.0),
+                child: RichText(
+                    text: TextSpan(
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 12),
+                        children: [
+                      const WidgetSpan(
+                          child: Icon(
+                        Icons.calendar_month,
+                        size: 16,
+                      )),
+                      TextSpan(text: routines![i].day)
+                    ])),
+              )
+            ]),
+            trailing: const Icon(Icons.keyboard_arrow_right)),
+      ));
+    }
+    return x;
+  }
+
+  _readRoutines() async {
+    final routineCollection = widget.isar.routines;
+    final getRoutines = await routineCollection.where().findAll();
+    setState(() {
+      routines = getRoutines;
+    });
   }
 }
