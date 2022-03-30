@@ -43,6 +43,8 @@ class _MainPageState extends State<MainPage> {
   List<Routine>? routines;
   final TextEditingController _searchController = TextEditingController();
   bool searching = false;
+  String feedback = "";
+  MaterialColor feedbackColor = Colors.blue;
 
   @override
   void initState() {
@@ -82,6 +84,14 @@ class _MainPageState extends State<MainPage> {
                       hintText: "Search routine",
                       hintStyle: TextStyle(fontStyle: FontStyle.italic))),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                feedback,
+                style: TextStyle(
+                    color: feedbackColor, fontStyle: FontStyle.italic),
+              ),
+            ),
             FutureBuilder<List<Widget>>(
                 future: _buildWidgets(),
                 builder: (context, snapshot) {
@@ -108,6 +118,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<List<Widget>> _buildWidgets() async {
+    createWatcher();
     if (!searching) {
       await _readRoutines();
     }
@@ -195,5 +206,22 @@ class _MainPageState extends State<MainPage> {
     });
 
     setState(() {});
+  }
+
+  createWatcher() {
+    Query<Routine> getTasks = widget.isar.routines.where().build();
+
+    Stream<List<Routine>> queryChanged = getTasks.watch(initialReturn: true);
+    queryChanged.listen((routines) {
+      if (routines.length > 3) {
+        setState(() {
+          feedback = "You have more than 3 tasks to do";
+          feedbackColor = Colors.red;
+        });
+      } else {
+        feedback = "You are right on track";
+        feedbackColor = Colors.blue;
+      }
+    });
   }
 }
