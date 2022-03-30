@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:routine_app/collections/category.dart';
 import 'package:routine_app/collections/routine.dart';
+import 'package:routine_app/main.dart';
 
 class UpdateRoutine extends StatefulWidget {
   final Isar isar;
@@ -42,7 +43,38 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
-      appBar: AppBar(title: const Text("Update routine")),
+      appBar: AppBar(
+        title: const Text("Update routine"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Delete Routine'),
+                          content: const Text(
+                              'Are you sure you want to delete this routine?'),
+                          actions: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  deleteRoutine();
+                                },
+                                child: const Text(
+                                  "Yes",
+                                )),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  "No",
+                                ))
+                          ],
+                        ));
+              },
+              icon: const Icon(Icons.delete))
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -225,5 +257,16 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
 
       Navigator.pop(context);
     });
+  }
+
+  deleteRoutine() async {
+    final routineCollection = widget.isar.routines;
+
+    await widget.isar.writeTxn((isar) async {
+      routineCollection.delete(widget.routine.id);
+    });
+
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => MyApp(isar: widget.isar)));
   }
 }
