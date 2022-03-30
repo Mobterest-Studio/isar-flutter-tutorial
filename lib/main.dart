@@ -41,6 +41,9 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<Routine>? routines;
+  final TextEditingController _searchController = TextEditingController();
+  bool searching = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -66,21 +69,38 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       body: SingleChildScrollView(
-        child: FutureBuilder<List<Widget>>(
-            future: _buildWidgets(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Column(children: snapshot.data!);
-              } else {
-                return const SizedBox();
-              }
-            }),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                  onChanged: searchRoutineByName,
+                  controller: _searchController,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(style: BorderStyle.solid)),
+                      hintText: "Search routine",
+                      hintStyle: TextStyle(fontStyle: FontStyle.italic))),
+            ),
+            FutureBuilder<List<Widget>>(
+                future: _buildWidgets(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(children: snapshot.data!);
+                  } else {
+                    return const SizedBox();
+                  }
+                }),
+          ],
+        ),
       ),
     );
   }
 
   Future<List<Widget>> _buildWidgets() async {
-    await _readRoutines();
+    if (!searching) {
+      await _readRoutines();
+    }
 
     List<Widget> x = [];
 
@@ -141,6 +161,16 @@ class _MainPageState extends State<MainPage> {
     final getRoutines = await routineCollection.where().findAll();
     setState(() {
       routines = getRoutines;
+    });
+  }
+
+  searchRoutineByName(String searchName) async {
+    searching = true;
+    final routineCollection = widget.isar.routines;
+    final searchResults =
+        await routineCollection.filter().titleContains(searchName).findAll();
+    setState(() {
+      routines = searchResults;
     });
   }
 }
