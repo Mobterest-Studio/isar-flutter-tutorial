@@ -6,323 +6,309 @@ part of 'routine.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetRoutineCollection on Isar {
-  IsarCollection<Routine> get routines {
-    return getCollection('Routine');
-  }
+  IsarCollection<Routine> get routines => this.collection();
 }
 
-final RoutineSchema = CollectionSchema(
-  name: 'Routine',
-  schema:
-      '{"name":"Routine","idName":"id","properties":[{"name":"day","type":"String"},{"name":"startTime","type":"String"},{"name":"title","type":"String"}],"indexes":[{"name":"day","unique":false,"properties":[{"name":"day","type":"Hash","caseSensitive":false}]},{"name":"startTime","unique":false,"properties":[{"name":"startTime","type":"Hash","caseSensitive":true}]}],"links":[{"name":"category","target":"Category"}]}',
-  nativeAdapter: const _RoutineNativeAdapter(),
-  webAdapter: const _RoutineWebAdapter(),
-  idName: 'id',
-  propertyIds: {'day': 0, 'startTime': 1, 'title': 2},
-  listProperties: {},
-  indexIds: {'day': 0, 'startTime': 1},
-  indexTypes: {
-    'day': [
-      NativeIndexType.stringHashCIS,
-    ],
-    'startTime': [
-      NativeIndexType.stringHash,
-    ]
+const RoutineSchema = CollectionSchema(
+  name: r'Routine',
+  id: 9144663503541703680,
+  properties: {
+    r'day': PropertySchema(
+      id: 0,
+      name: r'day',
+      type: IsarType.string,
+    ),
+    r'startTime': PropertySchema(
+      id: 1,
+      name: r'startTime',
+      type: IsarType.string,
+    ),
+    r'title': PropertySchema(
+      id: 2,
+      name: r'title',
+      type: IsarType.string,
+    )
   },
-  linkIds: {'category': 0},
-  backlinkIds: {},
-  linkedCollections: ['Category'],
-  getId: (obj) {
-    if (obj.id == Isar.autoIncrement) {
-      return null;
-    } else {
-      return obj.id;
-    }
+  estimateSize: _routineEstimateSize,
+  serialize: _routineSerialize,
+  deserialize: _routineDeserialize,
+  deserializeProp: _routineDeserializeProp,
+  idName: r'id',
+  indexes: {
+    r'startTime': IndexSchema(
+      id: -3870335341264752872,
+      name: r'startTime',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'startTime',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    ),
+    r'day': IndexSchema(
+      id: 3809350088207220763,
+      name: r'day',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'day',
+          type: IndexType.hash,
+          caseSensitive: false,
+        )
+      ],
+    )
   },
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [obj.category],
-  version: 2,
+  links: {
+    r'category': LinkSchema(
+      id: 807181303186450793,
+      name: r'category',
+      target: r'Category',
+      single: true,
+    )
+  },
+  embeddedSchemas: {},
+  getId: _routineGetId,
+  getLinks: _routineGetLinks,
+  attach: _routineAttach,
+  version: '3.0.5',
 );
 
-class _RoutineWebAdapter extends IsarWebTypeAdapter<Routine> {
-  const _RoutineWebAdapter();
+int _routineEstimateSize(
+  Routine object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.day.length * 3;
+  bytesCount += 3 + object.startTime.length * 3;
+  bytesCount += 3 + object.title.length * 3;
+  return bytesCount;
+}
 
-  @override
-  Object serialize(IsarCollection<Routine> collection, Routine object) {
-    final jsObj = IsarNative.newJsObject();
-    IsarNative.jsObjectSet(jsObj, 'day', object.day);
-    IsarNative.jsObjectSet(jsObj, 'id', object.id);
-    IsarNative.jsObjectSet(jsObj, 'startTime', object.startTime);
-    IsarNative.jsObjectSet(jsObj, 'title', object.title);
-    return jsObj;
-  }
+void _routineSerialize(
+  Routine object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeString(offsets[0], object.day);
+  writer.writeString(offsets[1], object.startTime);
+  writer.writeString(offsets[2], object.title);
+}
 
-  @override
-  Routine deserialize(IsarCollection<Routine> collection, dynamic jsObj) {
-    final object = Routine();
-    object.day = IsarNative.jsObjectGet(jsObj, 'day') ?? '';
-    object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity;
-    object.startTime = IsarNative.jsObjectGet(jsObj, 'startTime') ?? '';
-    object.title = IsarNative.jsObjectGet(jsObj, 'title') ?? '';
-    attachLinks(collection.isar,
-        IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity, object);
-    return object;
-  }
+Routine _routineDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = Routine();
+  object.day = reader.readString(offsets[0]);
+  object.id = id;
+  object.startTime = reader.readString(offsets[1]);
+  object.title = reader.readString(offsets[2]);
+  return object;
+}
 
-  @override
-  P deserializeProperty<P>(Object jsObj, String propertyName) {
-    switch (propertyName) {
-      case 'day':
-        return (IsarNative.jsObjectGet(jsObj, 'day') ?? '') as P;
-      case 'id':
-        return (IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity)
-            as P;
-      case 'startTime':
-        return (IsarNative.jsObjectGet(jsObj, 'startTime') ?? '') as P;
-      case 'title':
-        return (IsarNative.jsObjectGet(jsObj, 'title') ?? '') as P;
-      default:
-        throw 'Illegal propertyName';
-    }
-  }
-
-  @override
-  void attachLinks(Isar isar, int id, Routine object) {
-    object.category.attach(
-      id,
-      isar.routines,
-      isar.getCollection<Category>('Category'),
-      'category',
-      false,
-    );
+P _routineDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-class _RoutineNativeAdapter extends IsarNativeTypeAdapter<Routine> {
-  const _RoutineNativeAdapter();
+Id _routineGetId(Routine object) {
+  return object.id;
+}
 
-  @override
-  void serialize(IsarCollection<Routine> collection, IsarRawObject rawObj,
-      Routine object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.day;
-    final _day = IsarBinaryWriter.utf8Encoder.convert(value0);
-    dynamicSize += (_day.length) as int;
-    final value1 = object.startTime;
-    final _startTime = IsarBinaryWriter.utf8Encoder.convert(value1);
-    dynamicSize += (_startTime.length) as int;
-    final value2 = object.title;
-    final _title = IsarBinaryWriter.utf8Encoder.convert(value2);
-    dynamicSize += (_title.length) as int;
-    final size = staticSize + dynamicSize;
+List<IsarLinkBase<dynamic>> _routineGetLinks(Routine object) {
+  return [object.category];
+}
 
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
-    final writer = IsarBinaryWriter(buffer, staticSize);
-    writer.writeBytes(offsets[0], _day);
-    writer.writeBytes(offsets[1], _startTime);
-    writer.writeBytes(offsets[2], _title);
-  }
-
-  @override
-  Routine deserialize(IsarCollection<Routine> collection, int id,
-      IsarBinaryReader reader, List<int> offsets) {
-    final object = Routine();
-    object.day = reader.readString(offsets[0]);
-    object.id = id;
-    object.startTime = reader.readString(offsets[1]);
-    object.title = reader.readString(offsets[2]);
-    attachLinks(collection.isar, id, object);
-    return object;
-  }
-
-  @override
-  P deserializeProperty<P>(
-      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readString(offset)) as P;
-      case 1:
-        return (reader.readString(offset)) as P;
-      case 2:
-        return (reader.readString(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
-  }
-
-  @override
-  void attachLinks(Isar isar, int id, Routine object) {
-    object.category.attach(
-      id,
-      isar.routines,
-      isar.getCollection<Category>('Category'),
-      'category',
-      false,
-    );
-  }
+void _routineAttach(IsarCollection<dynamic> col, Id id, Routine object) {
+  object.id = id;
+  object.category.attach(col, col.isar.collection<Category>(), r'category', id);
 }
 
 extension RoutineQueryWhereSort on QueryBuilder<Routine, Routine, QWhere> {
   QueryBuilder<Routine, Routine, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
-  }
-
-  QueryBuilder<Routine, Routine, QAfterWhere> anyDay() {
-    return addWhereClauseInternal(const WhereClause(indexName: 'day'));
-  }
-
-  QueryBuilder<Routine, Routine, QAfterWhere> anyStartTime() {
-    return addWhereClauseInternal(const WhereClause(indexName: 'startTime'));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
   }
 }
 
 extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
-  QueryBuilder<Routine, Routine, QAfterWhereClause> idEqualTo(int id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: true,
-      upper: [id],
-      includeUpper: true,
-    ));
-  }
-
-  QueryBuilder<Routine, Routine, QAfterWhereClause> idNotEqualTo(int id) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
+  QueryBuilder<Routine, Routine, QAfterWhereClause> idEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
       ));
-    } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
-    }
+    });
   }
 
-  QueryBuilder<Routine, Routine, QAfterWhereClause> idGreaterThan(
-    int id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+  QueryBuilder<Routine, Routine, QAfterWhereClause> idNotEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
   }
 
-  QueryBuilder<Routine, Routine, QAfterWhereClause> idLessThan(
-    int id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+  QueryBuilder<Routine, Routine, QAfterWhereClause> idGreaterThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterWhereClause> idLessThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
-      includeLower: includeLower,
-      upper: [upperId],
-      includeUpper: includeUpper,
-    ));
-  }
-
-  QueryBuilder<Routine, Routine, QAfterWhereClause> dayEqualTo(String day) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: 'day',
-      lower: [day],
-      includeLower: true,
-      upper: [day],
-      includeUpper: true,
-    ));
-  }
-
-  QueryBuilder<Routine, Routine, QAfterWhereClause> dayNotEqualTo(String day) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: 'day',
-        upper: [day],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: 'day',
-        lower: [day],
-        includeLower: false,
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
       ));
-    } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: 'day',
-        lower: [day],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: 'day',
-        upper: [day],
-        includeUpper: false,
-      ));
-    }
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterWhereClause> startTimeEqualTo(
       String startTime) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: 'startTime',
-      lower: [startTime],
-      includeLower: true,
-      upper: [startTime],
-      includeUpper: true,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'startTime',
+        value: [startTime],
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterWhereClause> startTimeNotEqualTo(
       String startTime) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: 'startTime',
-        upper: [startTime],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: 'startTime',
-        lower: [startTime],
-        includeLower: false,
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'startTime',
+              lower: [],
+              upper: [startTime],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'startTime',
+              lower: [startTime],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'startTime',
+              lower: [startTime],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'startTime',
+              lower: [],
+              upper: [startTime],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterWhereClause> dayEqualTo(String day) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'day',
+        value: [day],
       ));
-    } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: 'startTime',
-        lower: [startTime],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: 'startTime',
-        upper: [startTime],
-        includeUpper: false,
-      ));
-    }
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterWhereClause> dayNotEqualTo(String day) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'day',
+              lower: [],
+              upper: [day],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'day',
+              lower: [day],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'day',
+              lower: [day],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'day',
+              lower: [],
+              upper: [day],
+              includeUpper: false,
+            ));
+      }
+    });
   }
 }
 
@@ -332,437 +318,550 @@ extension RoutineQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'day',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'day',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'day',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'day',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'day',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'day',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'day',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'day',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'day',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'day',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
-  QueryBuilder<Routine, Routine, QAfterFilterCondition> idEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'id',
-      value: value,
-    ));
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'day',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'day',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> idEqualTo(Id value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> idGreaterThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> idLessThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> idBetween(
-    int lower,
-    int upper, {
+    Id lower,
+    Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'startTime',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'startTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'startTime',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'startTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'startTime',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'startTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'startTime',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'startTime',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'startTime',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'startTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'startTime',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'startTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'startTime',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'startTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'startTime',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'startTime',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'startTime',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'startTime',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'title',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'title',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'title',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'title',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> titleIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'title',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> titleIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'title',
+        value: '',
+      ));
+    });
   }
 }
+
+extension RoutineQueryObject
+    on QueryBuilder<Routine, Routine, QFilterCondition> {}
 
 extension RoutineQueryLinks
     on QueryBuilder<Routine, Routine, QFilterCondition> {
   QueryBuilder<Routine, Routine, QAfterFilterCondition> category(
       FilterQuery<Category> q) {
-    return linkInternal(
-      isar.categorys,
-      q,
-      'category',
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'category');
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> categoryIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'category', 0, true, 0, true);
+    });
   }
 }
 
-extension RoutineQueryWhereSortBy on QueryBuilder<Routine, Routine, QSortBy> {
+extension RoutineQuerySortBy on QueryBuilder<Routine, Routine, QSortBy> {
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByDay() {
-    return addSortByInternal('day', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.asc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByDayDesc() {
-    return addSortByInternal('day', Sort.desc);
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<Routine, Routine, QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.desc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByStartTime() {
-    return addSortByInternal('startTime', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'startTime', Sort.asc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByStartTimeDesc() {
-    return addSortByInternal('startTime', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'startTime', Sort.desc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByTitle() {
-    return addSortByInternal('title', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.asc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> sortByTitleDesc() {
-    return addSortByInternal('title', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.desc);
+    });
   }
 }
 
-extension RoutineQueryWhereSortThenBy
+extension RoutineQuerySortThenBy
     on QueryBuilder<Routine, Routine, QSortThenBy> {
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByDay() {
-    return addSortByInternal('day', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.asc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByDayDesc() {
-    return addSortByInternal('day', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.desc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> thenById() {
-    return addSortByInternal('id', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByStartTime() {
-    return addSortByInternal('startTime', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'startTime', Sort.asc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByStartTimeDesc() {
-    return addSortByInternal('startTime', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'startTime', Sort.desc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByTitle() {
-    return addSortByInternal('title', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.asc);
+    });
   }
 
   QueryBuilder<Routine, Routine, QAfterSortBy> thenByTitleDesc() {
-    return addSortByInternal('title', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.desc);
+    });
   }
 }
 
@@ -770,39 +869,49 @@ extension RoutineQueryWhereDistinct
     on QueryBuilder<Routine, Routine, QDistinct> {
   QueryBuilder<Routine, Routine, QDistinct> distinctByDay(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('day', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<Routine, Routine, QDistinct> distinctById() {
-    return addDistinctByInternal('id');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'day', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<Routine, Routine, QDistinct> distinctByStartTime(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('startTime', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'startTime', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<Routine, Routine, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('title', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'title', caseSensitive: caseSensitive);
+    });
   }
 }
 
 extension RoutineQueryProperty
     on QueryBuilder<Routine, Routine, QQueryProperty> {
-  QueryBuilder<Routine, String, QQueryOperations> dayProperty() {
-    return addPropertyNameInternal('day');
+  QueryBuilder<Routine, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
   }
 
-  QueryBuilder<Routine, int, QQueryOperations> idProperty() {
-    return addPropertyNameInternal('id');
+  QueryBuilder<Routine, String, QQueryOperations> dayProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'day');
+    });
   }
 
   QueryBuilder<Routine, String, QQueryOperations> startTimeProperty() {
-    return addPropertyNameInternal('startTime');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'startTime');
+    });
   }
 
   QueryBuilder<Routine, String, QQueryOperations> titleProperty() {
-    return addPropertyNameInternal('title');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'title');
+    });
   }
 }
