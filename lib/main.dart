@@ -83,7 +83,12 @@ class _MainPageState extends State<MainPage> {
               _apitoisar();
             },
             icon: const Icon(Icons.download),
-          )
+          ),
+          IconButton(
+              onPressed: () {
+                _isartoapi();
+              },
+              icon: const Icon(Icons.upload))
         ],
       ),
       body: SingleChildScrollView(
@@ -310,5 +315,16 @@ class _MainPageState extends State<MainPage> {
   Future<List<Product>> generateProducts() async {
     List<Product> getProducts = await widget.isar.products.where().findAll();
     return getProducts;
+  }
+
+  _isartoapi() async {
+    final prodt = await widget.isar.products.where().findAll();
+    List<Map<String, dynamic>>? listProducts =
+        prodt.map((e) => e.toJson()).toList();
+    httpService.init(BaseOptions(baseUrl: serverUrl));
+    Map<String, dynamic> params = {'products': listProducts};
+    final response = await httpService.request(
+        endpoint: "/products", method: Method.POST, params: params);
+    Logger().i(response);
   }
 }
