@@ -40,6 +40,8 @@ dependencies:
   build_runner: ^2.3.2
   path_provider: ^2.0.9
   isar_flutter_libs: ^3.0.5
+  dio: ^4.0.6
+  logger: ^1.1.0
 
 dev_dependencies:
   flutter_test:
